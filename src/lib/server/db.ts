@@ -130,7 +130,7 @@ export function upsertUser(db: Db, input: UpsertUserInput): User {
 
 	const user = findUserByUsername(db, input.username);
 	if (!user) {
-		throw new Error('Nie udało się utworzyć użytkownika.');
+		throw new Error('Failed to create the user.');
 	}
 
 	return user;

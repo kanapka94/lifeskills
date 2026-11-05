@@ -28,8 +28,8 @@ const token = process.env.TOGGL_API_TOKEN?.trim();
 
 if (!token) {
 	console.error(
-		'✖ Brak TOGGL_API_TOKEN w .env.\n' +
-			'  Toggl Track → Profile Settings → API Token, potem wklej token do .env.'
+		'✖ Missing TOGGL_API_TOKEN in .env.\n' +
+			'  Toggl Track → Profile Settings → API Token, then paste the token into .env.'
 	);
 	process.exit(1);
 }
@@ -50,7 +50,7 @@ try {
 	const now = new Date();
 	const historyStart = resolveHistoryStart(process.env.TOGGL_START_DATE, now);
 
-	console.log('— Konto —');
+	console.log('— Account —');
 	const me = await getMe(token);
 	console.log({
 		id: me.id,
@@ -59,9 +59,9 @@ try {
 		timezone: me.timezone
 	});
 
-	console.log('\n— Projekty (GET /me/projects) —');
+	console.log('\n— Projects (GET /me/projects) —');
 	const projects = await getProjects(token);
-	console.log(`Znaleziono ${projects.length} aktywnych projektów.`);
+	console.log(`Found ${projects.length} active projects.`);
 	console.table(
 		projects.map((project) => ({
 			id: project.id,
@@ -73,16 +73,16 @@ try {
 	const workspaceId = me.default_workspace_id;
 
 	if (!workspaceId) {
-		throw new Error('Konto nie ma default_workspace_id — nie da się pobrać raportów.');
+		throw new Error('The account has no default_workspace_id — cannot fetch reports.');
 	}
 
-	console.log(`\n— Raport projektów (Reports API, workspace ${workspaceId}) —`);
-	console.log(`Zakres: ${toDateOnly(historyStart)} → ${toDateOnly(now)}`);
+	console.log(`\n— Project report (Reports API, workspace ${workspaceId}) —`);
+	console.log(`Range: ${toDateOnly(historyStart)} → ${toDateOnly(now)}`);
 
 	const totals = new Map<number, number>();
 	const ranges = splitDateRange(historyStart, now);
 
-	console.log(`Zakres podzielony na ${ranges.length} zapytań (limit 365 dni).`);
+	console.log(`Range split into ${ranges.length} requests (365-day limit).`);
 
 	for (const range of ranges) {
 		const chunk = await getProjectTotalsFromReports(
@@ -96,7 +96,7 @@ try {
 			totals.set(projectId, (totals.get(projectId) ?? 0) + seconds);
 		}
 
-		console.log(`  ✔ ${range.startDate} → ${range.endDate}: ${chunk.size} projektów`);
+		console.log(`  ✔ ${range.startDate} → ${range.endDate}: ${chunk.size} projects`);
 	}
 
 	console.table(
@@ -114,8 +114,8 @@ try {
 		})
 	);
 } catch (error) {
-	console.error('\n✖ Reports API nie zadziałało:', describeError(error));
-	console.error('  Próbuję awaryjnego źródła: /me/time_entries z ostatnich 90 dni…');
+	console.error('\n✖ Reports API failed:', describeError(error));
+	console.error('  Trying the fallback source: /me/time_entries for the last 90 days…');
 
 	try {
 		const now = new Date();
@@ -135,12 +135,12 @@ try {
 		);
 
 		if (truncated) {
-			console.warn('⚠ Toggl zwrócił limit 1000 wpisów — suma może być niepełna.');
+			console.warn('⚠ Toggl returned the 1000-entry limit — the total may be incomplete.');
 		}
 
-		console.warn('⚠ Aplikacja użyje tego trybu awaryjnego, ale obejmie on tylko ostatnie 90 dni.');
+		console.warn('⚠ The app will use this fallback mode, but it only covers the last 90 days.');
 	} catch (fallbackError) {
-		console.error('✖ Awaryjne źródło też nie zadziałało:', describeError(fallbackError));
+		console.error('✖ The fallback source also failed:', describeError(fallbackError));
 		process.exitCode = 1;
 	}
 }

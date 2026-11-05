@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { checkLoginAllowed, clearLoginFailures, recordLoginFailure } from './rate-limit';
 
-describe('limit prób logowania', () => {
-	it('blokuje IP po trzech nieudanych próbach na 15 minut', () => {
+describe('login attempt limit', () => {
+	it('blocks an IP for 15 minutes after three failed attempts', () => {
 		const ip = `test-${crypto.randomUUID()}`;
 		const now = Date.now();
 
@@ -25,7 +25,7 @@ describe('limit prób logowania', () => {
 		expect(afterFifteenMinutes.allowed).toBe(true);
 	});
 
-	it('czyści licznik po udanym logowaniu', () => {
+	it('resets the counter after a successful login', () => {
 		const ip = `test-${crypto.randomUUID()}`;
 		const now = Date.now();
 

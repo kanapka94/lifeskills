@@ -14,7 +14,7 @@ function required(name: string): string {
 	const value = process.env[name]?.trim();
 
 	if (!value) {
-		throw new Error(`Brak ${name} w .env. Uzupełnij go przed uruchomieniem seeda.`);
+		throw new Error(`Missing ${name} in .env. Fill it in before running the seed.`);
 	}
 
 	return value;
@@ -26,7 +26,7 @@ const displayName = process.env.ADMIN_DISPLAY_NAME?.trim() || username;
 const databasePath = process.env.DATABASE_PATH?.trim() || 'data/lifeexp.db';
 
 if (password.length < 8) {
-	throw new Error('ADMIN_PASSWORD musi mieć co najmniej 8 znaków.');
+	throw new Error('ADMIN_PASSWORD must be at least 8 characters long.');
 }
 
 const db = openDb(databasePath);
@@ -35,8 +35,8 @@ try {
 	const passwordHash = await hashPassword(password);
 	const user = upsertUser(db, { username, passwordHash, displayName });
 
-	console.log(`✔ Konto gotowe: ${user.username} (${user.display_name}), id=${user.id}`);
-	console.log(`  Baza: ${databasePath}`);
+	console.log(`✔ Account ready: ${user.username} (${user.display_name}), id=${user.id}`);
+	console.log(`  Database: ${databasePath}`);
 } finally {
 	db.close();
 }

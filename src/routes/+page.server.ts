@@ -56,7 +56,7 @@ export const actions: Actions = {
 
 		if (!runtimeEnv.togglApiToken) {
 			return fail(400, {
-				syncError: 'Brak TOGGL_API_TOKEN w pliku .env. Dodaj token z Toggl i zrestartuj serwer.',
+				syncError: 'Missing TOGGL_API_TOKEN in .env. Add a Toggl token and restart the server.',
 				syncWarning: null
 			});
 		}
@@ -70,7 +70,7 @@ export const actions: Actions = {
 			);
 
 			return fail(429, {
-				syncError: `Kolejna synchronizacja będzie możliwa za ${formatWait(waitSeconds)}.`,
+				syncError: `The next sync will be available in ${formatWait(waitSeconds)}.`,
 				syncWarning: null
 			});
 		}

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { resolveHistoryStart, splitDateRange, toDateOnly } from './toggl';
 
 describe('splitDateRange', () => {
-	it('zwraca jeden zakres, gdy mieści się w limicie', () => {
+	it('returns one range when it fits within the limit', () => {
 		const ranges = splitDateRange(
 			new Date('2025-01-01T00:00:00.000Z'),
 			new Date('2025-01-10T00:00:00.000Z')
@@ -11,7 +11,7 @@ describe('splitDateRange', () => {
 		expect(ranges).toEqual([{ startDate: '2025-01-01', endDate: '2025-01-10' }]);
 	});
 
-	it('dzieli długi zakres na kawałki i pokrywa całość bez dziur', () => {
+	it('splits a long range into chunks and covers it without gaps', () => {
 		const start = new Date('2024-01-01T00:00:00.000Z');
 		const end = new Date('2025-12-31T00:00:00.000Z');
 		const ranges = splitDateRange(start, end);
@@ -29,7 +29,7 @@ describe('splitDateRange', () => {
 		}
 	});
 
-	it('zwraca pustą tablicę, gdy start jest po końcu', () => {
+	it('returns an empty array when the start is after the end', () => {
 		expect(
 			splitDateRange(new Date('2025-02-01T00:00:00.000Z'), new Date('2025-01-01T00:00:00.000Z'))
 		).toEqual([]);
@@ -39,19 +39,19 @@ describe('splitDateRange', () => {
 describe('resolveHistoryStart', () => {
 	const now = new Date('2026-11-05T12:00:00.000Z');
 
-	it('domyślnie cofa się o 365 dni', () => {
+	it('defaults to 365 days back', () => {
 		expect(toDateOnly(resolveHistoryStart(undefined, now))).toBe('2025-11-05');
 	});
 
-	it('przyjmuje poprawną datę z .env', () => {
+	it('accepts a valid date from .env', () => {
 		expect(toDateOnly(resolveHistoryStart('2024-01-01', now))).toBe('2024-01-01');
 	});
 
-	it('odrzuca zły format daty', () => {
+	it('rejects an invalid date format', () => {
 		expect(() => resolveHistoryStart('01.01.2024', now)).toThrow(/YYYY-MM-DD/);
 	});
 
-	it('odrzuca datę z przyszłości', () => {
-		expect(() => resolveHistoryStart('2027-01-01', now)).toThrow(/przyszłości/);
+	it('rejects a future date', () => {
+		expect(() => resolveHistoryStart('2027-01-01', now)).toThrow(/future/);
 	});
 });

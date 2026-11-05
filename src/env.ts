@@ -14,12 +14,12 @@ export const variables = defineEnvVars({
 			const secret = value?.trim();
 
 			if (!secret) {
-				throw new Error('Brak SESSION_SECRET w .env. Wygeneruj go: openssl rand -hex 32');
+				throw new Error('Missing SESSION_SECRET in .env. Generate it: openssl rand -hex 32');
 			}
 
 			if (secret.length < 32) {
 				throw new Error(
-					'SESSION_SECRET musi mieć co najmniej 32 znaki. Wygeneruj go: openssl rand -hex 32'
+					'SESSION_SECRET must be at least 32 characters long. Generate it: openssl rand -hex 32'
 				);
 			}
 

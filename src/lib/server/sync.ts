@@ -38,7 +38,7 @@ export async function syncUser(user: PublicUser): Promise<SyncResult> {
 			lastSyncedAt: stateBefore.last_synced_at,
 			warning: null,
 			error:
-				'Brak TOGGL_API_TOKEN w .env. Dodaj token z Toggl (Profile Settings → API Token) i zrestartuj serwer.'
+				'Missing TOGGL_API_TOKEN in .env. Add a token from Toggl (Profile Settings → API Token) and restart the server.'
 		};
 	}
 
@@ -50,7 +50,9 @@ export async function syncUser(user: PublicUser): Promise<SyncResult> {
 		const workspaceId = user.toggl_workspace_id ?? me.default_workspace_id ?? null;
 
 		if (!workspaceId) {
-			throw new Error('Toggl nie zwrócił ID workspace. Sprawdź, czy konto ma domyślny workspace.');
+			throw new Error(
+				'Toggl did not return a workspace ID. Check that the account has a default workspace.'
+			);
 		}
 
 		const projects = await getProjects(token);
@@ -89,7 +91,7 @@ export async function syncUser(user: PublicUser): Promise<SyncResult> {
 			error: null
 		};
 	} catch (error) {
-		const message = error instanceof Error ? error.message : 'Nieznany błąd synchronizacji.';
+		const message = error instanceof Error ? error.message : 'Unknown sync error.';
 		saveSyncError(db, user.id, message);
 
 		return {

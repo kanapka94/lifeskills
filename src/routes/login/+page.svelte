@@ -5,20 +5,18 @@
 </script>
 
 <svelte:head>
-	<title>Logowanie · LifeExp</title>
-	<meta name="description" content="Zaloguj się do swojego dziennika ćwiczeń." />
+	<title>Log in · LifeExp</title>
+	<meta name="description" content="Log in to your practice journal." />
 </svelte:head>
 
 <main class="flex min-h-screen items-center justify-center px-4 py-12">
 	<section class="rpg-panel w-full max-w-md p-8 sm:p-10">
 		<header class="mb-8 text-center">
 			<p class="mb-2 text-xs font-semibold tracking-[0.35em] text-amber-300/60 uppercase">
-				Gildia Domowa
+				Home Guild
 			</p>
 			<h1 class="font-display text-4xl text-amber-100">LifeExp</h1>
-			<p class="mt-3 text-sm text-stone-400">
-				Zaloguj się, aby zobaczyć postęp swoich umiejętności.
-			</p>
+			<p class="mt-3 text-sm text-stone-400">Log in to see your skill progress.</p>
 		</header>
 
 		{#if form?.error}
@@ -33,7 +31,7 @@
 			<input type="hidden" name="redirectTo" value={form?.redirectTo ?? data.redirectTo} />
 
 			<label class="block">
-				<span class="mb-2 block text-sm font-medium text-stone-300">Login</span>
+				<span class="mb-2 block text-sm font-medium text-stone-300">Username</span>
 				<input
 					class="rpg-input"
 					type="text"
@@ -47,7 +45,7 @@
 			</label>
 
 			<label class="block">
-				<span class="mb-2 block text-sm font-medium text-stone-300">Hasło</span>
+				<span class="mb-2 block text-sm font-medium text-stone-300">Password</span>
 				<input
 					class="rpg-input"
 					type="password"
@@ -57,11 +55,11 @@
 				/>
 			</label>
 
-			<button class="rpg-button w-full" type="submit">Wejdź do gildii</button>
+			<button class="rpg-button w-full" type="submit">Enter the guild</button>
 		</form>
 
 		<p class="mt-8 text-center text-xs text-stone-500">
-			Po trzech nieudanych próbach logowanie z Twojego adresu IP zostanie zablokowane na 15 minut.
+			After three failed attempts, logging in from your IP address will be blocked for 15 minutes.
 		</p>
 	</section>
 </main>

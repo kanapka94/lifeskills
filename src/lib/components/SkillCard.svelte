@@ -13,7 +13,7 @@
 	const percent = $derived(Math.round(skill.progress.progress * 100));
 
 	function pickIcon(name: string): string {
-		const lower = name.toLocaleLowerCase('pl-PL');
+		const lower = name.toLocaleLowerCase('en-US');
 
 		if (/pian|piano|keyboard|klawisz/.test(lower)) return '🎹';
 		if (/pad|perk|drum|bęben|beben/.test(lower)) return '🥁';
@@ -41,7 +41,7 @@
 			<div class="min-w-0">
 				<h2 class="truncate font-display text-xl text-stone-100">{skill.name}</h2>
 				<p class="mt-0.5 text-xs tracking-[0.2em] text-stone-500 uppercase">
-					Poziom {skill.progress.level}
+					Level {skill.progress.level}
 				</p>
 			</div>
 		</div>
@@ -61,12 +61,12 @@
 		<ProgressBar
 			value={skill.progress.progress}
 			color={skill.color}
-			label={`Postęp: ${skill.name}`}
+			label={`Progress: ${skill.name}`}
 		/>
 
 		<div class="mt-2 flex items-baseline justify-between gap-3 text-xs text-stone-500">
-			<span>{skill.xp} XP łącznie</span>
-			<span class="text-right">do awansu brakuje {skill.progress.xpToNextLevel} XP</span>
+			<span>{skill.xp} XP total</span>
+			<span class="text-right">{skill.progress.xpToNextLevel} XP to next level</span>
 		</div>
 	</div>
 
@@ -75,6 +75,6 @@
 			<span aria-hidden="true">⏱</span>
 			{skill.totalTimeLabel}
 		</span>
-		<span class="text-stone-600">10 XP = 1 minuta</span>
+		<span class="text-stone-600">10 XP = 1 minute</span>
 	</footer>
 </article>

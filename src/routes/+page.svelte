@@ -29,20 +29,18 @@
 
 <svelte:head>
 	<title>Dashboard · LifeExp</title>
-	<meta name="description" content="Twój postęp ćwiczeń z Toggl Track." />
+	<meta name="description" content="Your practice progress from Toggl Track." />
 </svelte:head>
 
 <main class="mx-auto min-h-screen w-full max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
 	<header class="mb-8 flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
 		<div>
-			<p class="text-xs font-semibold tracking-[0.35em] text-amber-300/60 uppercase">
-				Gildia Domowa
-			</p>
+			<p class="text-xs font-semibold tracking-[0.35em] text-amber-300/60 uppercase">Home Guild</p>
 			<h1 class="mt-2 font-display text-3xl text-amber-50 sm:text-4xl">
-				Cześć, {data.user.display_name}
+				Hello, {data.user.display_name}
 			</h1>
 			<p class="mt-2 max-w-xl text-sm text-stone-400">
-				Każda minuta ćwiczeń to 10 XP. Twój czas z Toggl Track zamieniamy na poziomy umiejętności.
+				Every minute of practice is 10 XP. Your Toggl Track time becomes skill levels.
 			</p>
 		</div>
 
@@ -50,35 +48,35 @@
 			<form method="POST" action="?/sync">
 				<button class="rpg-button" type="submit" disabled={syncDisabled}>
 					{#if !data.togglConfigured}
-						Toggl nieskonfigurowany
+						Toggl not configured
 					{:else if secondsLeft > 0}
-						Sync za {formatWait(secondsLeft)}
+						Sync in {formatWait(secondsLeft)}
 					{:else}
-						Synchronizuj
+						Sync now
 					{/if}
 				</button>
 			</form>
 
 			<form method="POST" action="?/logout">
-				<button class="rpg-button-ghost" type="submit">Wyloguj</button>
+				<button class="rpg-button-ghost" type="submit">Log out</button>
 			</form>
 		</div>
 	</header>
 
 	{#if !data.togglConfigured}
 		<div class="mb-6 rounded-xl border border-amber-300/20 bg-amber-950/20 px-5 py-4 text-sm">
-			<p class="font-medium text-amber-200">Toggl nie jest jeszcze podłączony</p>
+			<p class="font-medium text-amber-200">Toggl is not connected yet</p>
 			<p class="mt-1 text-amber-100/70">
-				Dodaj <code class="rounded bg-black/30 px-1.5 py-0.5">TOGGL_API_TOKEN</code> do pliku
-				<code class="rounded bg-black/30 px-1.5 py-0.5">.env</code> i zrestartuj serwer. Token znajdziesz
-				w Toggl Track → Profile Settings → API Token.
+				Add <code class="rounded bg-black/30 px-1.5 py-0.5">TOGGL_API_TOKEN</code> to your
+				<code class="rounded bg-black/30 px-1.5 py-0.5">.env</code> file and restart the server. You can
+				find the token in Toggl Track → Profile Settings → API Token.
 			</p>
 		</div>
 	{/if}
 
 	{#if errorMessage}
 		<div class="mb-6 rounded-xl border border-red-400/30 bg-red-950/30 px-5 py-4 text-sm">
-			<p class="font-medium text-red-200">Nie udało się zsynchronizować</p>
+			<p class="font-medium text-red-200">Sync failed</p>
 			<p class="mt-1 text-red-100/70">{errorMessage}</p>
 		</div>
 	{/if}
@@ -94,7 +92,7 @@
 	<section class="rpg-panel mb-6 p-6 sm:p-7">
 		<div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
 			<div>
-				<p class="text-xs tracking-[0.25em] text-stone-500 uppercase">Poziom bohatera</p>
+				<p class="text-xs tracking-[0.25em] text-stone-500 uppercase">Hero level</p>
 				<p class="mt-1 font-display text-5xl leading-none text-amber-100">
 					{data.globalProgress.level}
 				</p>
@@ -104,26 +102,26 @@
 				<p class="text-lg font-semibold text-amber-200">{data.totalXp} XP</p>
 				<p class="text-xs text-stone-500">
 					{data.skills.length}
-					{data.skills.length === 1 ? 'umiejętność' : 'umiejętności'} · {data.totalTimeLabel}
+					{data.skills.length === 1 ? 'skill' : 'skills'} · {data.totalTimeLabel}
 				</p>
 			</div>
 		</div>
 
 		<div class="mt-5">
-			<ProgressBar value={data.globalProgress.progress} label="Postęp poziomu bohatera" size="sm" />
+			<ProgressBar value={data.globalProgress.progress} label="Hero level progress" size="sm" />
 			<div class="mt-2 flex items-baseline justify-between text-xs text-stone-500">
 				<span>
 					{data.globalProgress.xpIntoLevel} / {data.globalProgress.xpForNextLevel} XP
 				</span>
-				<span>do poziomu {data.globalProgress.level + 1}</span>
+				<span>to level {data.globalProgress.level + 1}</span>
 			</div>
 		</div>
 	</section>
 
 	<section>
 		<div class="mb-4 flex items-center justify-between">
-			<h2 class="font-display text-2xl text-stone-100">Umiejętności</h2>
-			<span class="text-xs text-stone-500">Projekty z Toggl Track</span>
+			<h2 class="font-display text-2xl text-stone-100">Skills</h2>
+			<span class="text-xs text-stone-500">Toggl Track projects</span>
 		</div>
 
 		{#if data.skills.length > 0}
@@ -135,14 +133,13 @@
 		{:else}
 			<div class="rpg-panel p-8 text-center">
 				<p class="text-3xl" aria-hidden="true">🗺️</p>
-				<h3 class="mt-3 font-display text-xl text-stone-200">Pusta mapa umiejętności</h3>
+				<h3 class="mt-3 font-display text-xl text-stone-200">Empty skill map</h3>
 				<p class="mx-auto mt-2 max-w-md text-sm text-stone-400">
 					{#if data.togglConfigured}
-						Nie znaleziono aktywnych projektów w Toggl Track. Utwórz projekt (np. „Pianino” i „Pad
-						perkusyjny”), zaloguj czas, a potem kliknij „Synchronizuj”.
+						No active projects found in Toggl Track. Create a project (e.g. “Piano” and “Drum pad”),
+						track some time, then click “Sync now”.
 					{:else}
-						Po dodaniu tokena Toggl i synchronizacji zobaczysz tutaj jeden pasek postępu na każdy
-						projekt.
+						Once you add a Toggl token and sync, you'll see one progress bar for each project here.
 					{/if}
 				</p>
 			</div>
@@ -152,9 +149,9 @@
 	<footer
 		class="mt-10 flex flex-col gap-2 border-t border-white/5 pt-5 text-xs text-stone-600 sm:flex-row sm:items-center sm:justify-between"
 	>
-		<span>Ostatnia synchronizacja: {formatDateTime(data.lastSyncedAt)}</span>
+		<span>Last sync: {formatDateTime(data.lastSyncedAt)}</span>
 		<span>
-			Automatyczna synchronizacja co {data.syncIntervalMinutes} min · dane z Toggl Track
+			Auto-sync every {data.syncIntervalMinutes} min · data from Toggl Track
 		</span>
 	</footer>
 </main>

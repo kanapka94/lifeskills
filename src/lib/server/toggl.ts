@@ -88,8 +88,8 @@ async function request<T>(url: string, token: string, init: RequestInit = {}): P
 			signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS)
 		});
 	} catch (error) {
-		const reason = error instanceof Error ? error.message : 'nieznany błąd sieci';
-		throw new TogglError(`Nie udało się połączyć z Toggl: ${reason}`);
+		const reason = error instanceof Error ? error.message : 'unknown network error';
+		throw new TogglError(`Could not connect to Toggl: ${reason}`);
 	}
 
 	if (!response.ok) {
@@ -98,16 +98,13 @@ async function request<T>(url: string, token: string, init: RequestInit = {}): P
 
 		if (response.status === 401 || response.status === 403) {
 			throw new TogglError(
-				'Toggl odrzucił token API. Sprawdź TOGGL_API_TOKEN w .env.',
+				'Toggl rejected the API token. Check TOGGL_API_TOKEN in .env.',
 				response.status
 			);
 		}
 
 		if (response.status === 429) {
-			throw new TogglError(
-				'Limit API Toggl (30 zapytań/h) został przekroczony. Spróbuj później.',
-				429
-			);
+			throw new TogglError('Toggl API limit (30 requests/hour) exceeded. Try again later.', 429);
 		}
 
 		throw new TogglError(
@@ -157,7 +154,7 @@ export async function getProjects(token: string): Promise<TogglProject[]> {
 		.filter((project) => project.active !== false)
 		.map((project) => ({
 			id: Number(project.id),
-			name: project.name || `Projekt ${project.id}`,
+			name: project.name || `Project ${project.id}`,
 			color: typeof project.color === 'string' ? project.color : null,
 			active: true
 		}))
@@ -279,16 +276,16 @@ export function resolveHistoryStart(value: string | undefined, now = new Date())
 	}
 
 	if (!/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
-		throw new Error(`Nieprawidłowa data TOGGL_START_DATE: "${trimmed}". Użyj formatu YYYY-MM-DD.`);
+		throw new Error(`Invalid TOGGL_START_DATE: "${trimmed}". Use the YYYY-MM-DD format.`);
 	}
 
 	const parsed = new Date(`${trimmed}T00:00:00.000Z`);
 	if (Number.isNaN(parsed.getTime())) {
-		throw new Error(`Nieprawidłowa data TOGGL_START_DATE: "${trimmed}".`);
+		throw new Error(`Invalid TOGGL_START_DATE: "${trimmed}".`);
 	}
 
 	if (parsed.getTime() > now.getTime()) {
-		throw new Error('TOGGL_START_DATE nie może być datą z przyszłości.');
+		throw new Error('TOGGL_START_DATE cannot be a future date.');
 	}
 
 	return parsed;
@@ -343,7 +340,7 @@ export async function getProjectTotals(
 	end: Date
 ): Promise<ProjectTotalsResult> {
 	if (start.getTime() > end.getTime()) {
-		throw new Error('Data początkowa zakresu jest późniejsza niż data końcowa.');
+		throw new Error('The range start date is later than the end date.');
 	}
 
 	const ranges = splitDateRange(start, end);
@@ -385,11 +382,11 @@ export async function getProjectTotals(
 	);
 
 	const warnings = [
-		'Toggl Reports API jest niedostępne dla tego workspace — liczę tylko ostatnie 90 dni z /me/time_entries.'
+		'Toggl Reports API is not available for this workspace — counting only the last 90 days from /me/time_entries.'
 	];
 
 	if (truncated) {
-		warnings.push('Toggl zwrócił limit 1000 wpisów — suma może być niepełna.');
+		warnings.push('Toggl returned the 1000-entry limit — the total may be incomplete.');
 	}
 
 	return {

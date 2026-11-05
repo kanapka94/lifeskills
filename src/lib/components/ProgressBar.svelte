@@ -6,7 +6,7 @@
 		size?: 'sm' | 'md';
 	};
 
-	let { value, color = null, label = 'Postęp', size = 'md' }: Props = $props();
+	let { value, color = null, label = 'Progress', size = 'md' }: Props = $props();
 
 	const percent = $derived(Math.round(Math.min(1, Math.max(0, value)) * 100));
 	const barStyle = $derived(

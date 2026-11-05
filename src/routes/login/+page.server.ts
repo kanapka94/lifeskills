@@ -34,7 +34,7 @@ export const actions: Actions = {
 		const gate = checkLoginAllowed(ip);
 		if (!gate.allowed) {
 			return fail(429, {
-				error: `Zbyt wiele nieudanych prób logowania. Spróbuj ponownie za ${formatBlockTime(gate.retryAfterSeconds)}.`,
+				error: `Too many failed login attempts. Try again in ${formatBlockTime(gate.retryAfterSeconds)}.`,
 				username,
 				redirectTo,
 				retryAfterSeconds: gate.retryAfterSeconds
@@ -43,7 +43,7 @@ export const actions: Actions = {
 
 		if (!username || !password) {
 			return fail(400, {
-				error: 'Podaj login i hasło.',
+				error: 'Enter your username and password.',
 				username,
 				redirectTo
 			});
@@ -63,7 +63,7 @@ export const actions: Actions = {
 
 			if (!afterFailure.allowed) {
 				return fail(429, {
-					error: `Zbyt wiele nieudanych prób logowania. Spróbuj ponownie za ${formatBlockTime(afterFailure.retryAfterSeconds)}.`,
+					error: `Too many failed login attempts. Try again in ${formatBlockTime(afterFailure.retryAfterSeconds)}.`,
 					username,
 					redirectTo,
 					retryAfterSeconds: afterFailure.retryAfterSeconds
@@ -71,7 +71,7 @@ export const actions: Actions = {
 			}
 
 			return fail(401, {
-				error: 'Nieprawidłowy login lub hasło.',
+				error: 'Invalid username or password.',
 				username,
 				redirectTo
 			});
@@ -108,5 +108,5 @@ function getClientIp(event: { getClientAddress: () => string }): string {
 
 function formatBlockTime(seconds: number): string {
 	const minutes = Math.ceil(seconds / 60);
-	return minutes <= 1 ? 'minutę' : `${minutes} min`;
+	return minutes <= 1 ? '1 minute' : `${minutes} min`;
 }
